@@ -8,7 +8,7 @@ This code uses Anaconda. Follow instructions on how to Install anconda here: htt
 
 folder structure 
 ----------
-dataset:contains the digits dataset
+dataset: contains the training and test digits data
 
 source: contains the source code
 
