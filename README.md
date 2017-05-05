@@ -1,13 +1,14 @@
 # digit_classification
 
-# Libraries and dependencies
-
+Libraries and dependencies
+----------
 This code runs in python 3. Follow instructions on how to Install Python 3 here. https://www.python.org/downloads/s
 
-Uses anaconda libraries. Follow instructions on how to Install anconda here: https://docs.continuum.io/anaconda/install. Install the python3 version of Anaconda.
+This code uses Anaconda. Follow instructions on how to Install anconda here: https://docs.continuum.io/anaconda/install. The python3 version of Anaconda is needed.
 
-# folder structure 
-dataset folder contains the digits dataset
+folder structure 
+----------
+dataset: contains the training and test digits data
 
-source folder contains the source code
+source: contains the source code
 
