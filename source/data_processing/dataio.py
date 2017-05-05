@@ -2,6 +2,13 @@
 import os, sys, math, random, pdb
 import numpy as np
 from scipy import io
+from sklearn import preprocessing
+import matplotlib
+import matplotlib.pyplot as plt
+from scipy.io import loadmat
+import time
+
+
 
 
 def load_data(): 
@@ -31,6 +38,32 @@ def split_rnd(Xtr, Ytr, ratio=0.8):
 	Xvl, Yvl, Xtr, Ytr = Xtr[int(ratio*n)+1:, :],Ytr[int(ratio*n)+1:, :] , Xtr[:int(ratio*n), :], Ytr[:int(ratio*n), :]
 
 	return Xtr, Ytr, Xvl, Yvl
+
+
+def compute_accuracy(Predicted_labels, Ground_Truth):
+	return np.sum(np.nonzero(Ground_Truth)[1]==np.nonzero(Predicted_labels)[1])/(np.shape(Ground_Truth)[0]*1.0)
+
+def normalize_and_center(X):
+	scaler = preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True).fit(X)
+	return scaler.transform(X) #Center the data around the mean and normalize it
+
+def plot_images(X):
+	xdim=28; ydim=28 
+	n, d = X.shape
+	f, axarr = plt.subplots(1, n, sharey=True)
+	f.set_figwidth(10 * n)
+	f.set_figheight(n)
+    
+	
+	if n > 1:
+		for i in range(n):
+			axarr[i].imshow(X[i, :].reshape(ydim, xdim).T, cmap=plt.cm.binary_r)
+	else:
+		axarr.imshow(X[0, :].reshape(ydim, xdim).T, cmap=plt.cm.binary_r)
+	
+	plt.show()
+	
+
 
 
 if __name__ == '__main__':
