@@ -53,7 +53,7 @@ def plot_images(X):
 	f, axarr = plt.subplots(1, n, sharey=True)
 	f.set_figwidth(10 * n)
 	f.set_figheight(n)
-    
+    dskdskd
 	
 	if n > 1:
 		for i in range(n):
