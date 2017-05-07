@@ -22,7 +22,7 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                         strides=[1, 2, 2, 1], padding='SAME')
 
-def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
+def apply_cnn(Xtr, Ytr, Xte, Ground_Truth=None, drop_pr=0.5, n_training=1000):
 
 	x = tf.placeholder(tf.float32, shape=[None, 784]) #placeholder for data points
 	y_ = tf.placeholder(tf.float32, shape=[None, 10]) #placeholder for labels
@@ -69,32 +69,48 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
 			train_accuracy = accuracy.eval(feed_dict={
 				x:X_batch, y_: Y_batch, keep_prob: 1.0})
 			print("step %d, training accuracy %g"%(i, train_accuracy))
-			print("test accuracy %g"%accuracy.eval(feed_dict={
-				x: Xte, y_: Ground_Truth, keep_prob: 1.0}))
+			if Ground_Truth !=None:
+				print("test accuracy %g"%accuracy.eval(feed_dict={
+					x: Xte, y_: Ground_Truth, keep_prob: 1.0}))
 			print("\n")
 		train_step.run(feed_dict={x: X_batch, y_: Y_batch, keep_prob: 1-drop_pr})
 
 	#return accuracy score on test set
 	predictions = vectorize_labels(sess.run(tf.argmax(y_conv,1), feed_dict={x: Xte, keep_prob: 1.0})) 
-	acc = accuracy.eval(feed_dict={x: Xte, y_: Ground_Truth, keep_prob: 1.0})
+	acc=None
+	if Ground_Truth !=None:
+		acc = accuracy.eval(feed_dict={x: Xte, y_: Ground_Truth, keep_prob: 1.0})
 	return predictions, acc
 
+def predict_testlabels(Xtr, Ytr, Xte, train_iterations):
+	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
+	print("train size (n,d)=("+str(np.shape(Xtr))+")")
+	predictions, accuracy = apply_cnn(Xtr, Ytr, Xte, None, dropout_probability, train_iterations)
+	save_predictions(predictions)
+	#plot_missclassified_images(Xte, predictions, Ground_Truth, n=10)
+	#plot_wellclassified_images(Xte, predictions, Ground_Truth, n=10)
+	return predictions
 
-if __name__ == '__main__':
-	#load data
-	train_iterations = 1
-	dropout_probability = 0.5
-	Xtr, Ytr, Xte = load_data()
+def predict_onvalidation(Xtr, Ytr, train_iterations):
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
 	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
 	predictions, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
-	
 	print("test accuracy "+str(accuracy))
 	plot_missclassified_images(Xvl, predictions, Ground_Truth, n=10)
 	plot_wellclassified_images(Xvl, predictions, Ground_Truth, n=10)
+	return predictions, accuracy
 
-	save_predictions(predictions)
+
+
+if __name__ == '__main__':
+	#load data
+	train_iterations = 30000
+	dropout_probability = 0.5
+	Xtr, Ytr, Xte = load_data()
+	#predict_testlabels(Xtr, Ytr, Xte, train_iterations)
+	predict_onvalidation(Xtr, Ytr, train_iterations)
+	
 
 	
 
