@@ -113,7 +113,6 @@ def hallucinate_data(X, Y, factor=4): #will return a dataset = of size factor* n
 def vectorize_labels(Y): 
 	#Y: n vector where each value is an int between 0 and 9 representing the label
 	# return a matrix n*10 n*10 (a label is a vector of dimention 10 that contains 1 on the dimention that corresponds to the right digit)
-	pdb.set_trace()
 	indptr = range(len(Y)+1)
 	ones = np.ones(len(Y))
 	matrix = scipy.sparse.csr_matrix((ones, Y, indptr))
@@ -154,12 +153,10 @@ def rotate_image(vec):
 	return rot_vec
 
 if __name__ == '__main__':
-	#pdb.set_trace()
 	Xtr, Ytr, Xte = load_data()
 	Xtr, Ytr, Xvl, Yvl = split_rnd(Xtr, Ytr)
 
 	hallucinate_data(Xtr, Ytr, 4)
-	#pdb.set_trace()
 	print("done")
 
 
