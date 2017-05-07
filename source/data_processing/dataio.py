@@ -9,8 +9,6 @@ from scipy.io import loadmat
 import time
 
 
-
-
 def load_data(): 
 	#returns Xtr, Ytr, Xte
 	#Xtr is a numpy matrix representing the training data n*d
@@ -39,6 +37,15 @@ def split_rnd(Xtr, Ytr, ratio=0.8):
 
 	return Xtr, Ytr, Xvl, Yvl
 
+def sample_random_batch(X, Y, size):
+	[n, d] = np.shape(X) #n is the number of training points. d is the dimention. 
+	shuffle = np.random.permutation(n) #randomly shuffle the data
+	X = X[shuffle, :]
+	Y = Y[shuffle, :] 
+
+	return X[:size, :], Y[:size, :]
+
+
 
 def compute_accuracy(Predicted_labels, Ground_Truth):
 	return np.sum(np.nonzero(Ground_Truth)[1]==np.nonzero(Predicted_labels)[1])/(np.shape(Ground_Truth)[0]*1.0)
@@ -53,7 +60,6 @@ def plot_images(X):
 	f, axarr = plt.subplots(1, n, sharey=True)
 	f.set_figwidth(10 * n)
 	f.set_figheight(n)
-    dskdskd
 	
 	if n > 1:
 		for i in range(n):

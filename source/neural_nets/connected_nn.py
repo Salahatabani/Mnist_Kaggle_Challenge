@@ -3,11 +3,8 @@ import os, sys, math, random, pdb
 import numpy as np
 sys.path.insert(0, os.path.abspath("../data_processing/"))
 from dataio import *
-from sklearn.neural_network import MLPClassifier
-from sklearn.ensemble import BaggingClassifier
-import scipy
 import matplotlib.pyplot as plt
-
+import tensorflow as tf
 
 def fit(Xtr, Ytr, do_bagging=False): #returns a function that takes Xte and returns Yte
 	#Xtr, Ytr, Xvl, Yvl = split_rnd(Xtr, Ytr)
@@ -22,6 +19,9 @@ def fit(Xtr, Ytr, do_bagging=False): #returns a function that takes Xte and retu
 	
 	clf = MLPClassifier(solver='lbfgs', alpha=regularization, hidden_layer_sizes=hidden_layers, 
 		max_iter=1000000, learning_rate='invscaling')
+
+	cnn = Classifier(layers=[Convolution("Rectifier", channels=8, kernel_shape=(3,3)), Layer("Softmax")], learning_rate=0.02, n_iter=5)
+	cnn.fit(Xtr, Ytr)
 
 	if do_bagging:
 		clf = BaggingClassifier(clf, max_samples=data_samples, max_features=max_features, n_estimators=num_estimators)
