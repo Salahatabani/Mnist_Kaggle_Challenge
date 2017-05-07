@@ -27,7 +27,7 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
 	x = tf.placeholder(tf.float32, shape=[None, 784]) #placeholder for data points
 	y_ = tf.placeholder(tf.float32, shape=[None, 10]) #placeholder for labels
 	x_image = tf.reshape(x, [-1,28,28,1]) #transform image to 2D 28*28 pixels matrix
-	#Hidden Layer 1 : 
+	#Hidden Layer 1: 
 	W_conv1 = weight_variable([5, 5, 1, 32]) #weights: 5*5 filter and 32 features
 	b_conv1 = bias_variable([32]) #bais
 	h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) #convolution with relu transfer
@@ -60,11 +60,10 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
 
 	sess = tf.InteractiveSession()
 	sess.run(tf.global_variables_initializer())
-
 	
 	#train
 	for i in range(n_training):
-		X_batch, Y_batch = sample_random_batch(Xtr, Ytr, 100)
+		X_batch, Y_batch = sample_seqential_batch(Xtr, Ytr, 100, i)
 
 		if i%100 == 0:
 			train_accuracy = accuracy.eval(feed_dict={
@@ -76,18 +75,26 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
 		train_step.run(feed_dict={x: X_batch, y_: Y_batch, keep_prob: 1-drop_pr})
 
 	#return accuracy score on test set
-	
-	return accuracy.eval(feed_dict={x: Xte, y_: Ground_Truth, keep_prob: 1.0})
+	predictions = vectorize_labels(sess.run(tf.argmax(y_conv,1), feed_dict={x: Xte, keep_prob: 1.0})) 
+	acc = accuracy.eval(feed_dict={x: Xte, y_: Ground_Truth, keep_prob: 1.0})
+	return predictions, acc
 
 
 if __name__ == '__main__':
 	#load data
-	train_iterations = 5000
+	train_iterations = 1
 	dropout_probability = 0.5
 	Xtr, Ytr, Xte = load_data()
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
 	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
-	accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
-
+	print("train size (n,d)=("+str(np.shape(Xtr))+")")
+	predictions, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
+	
 	print("test accuracy "+str(accuracy))
+	plot_missclassified_images(Xvl, predictions, Ground_Truth, n=10)
+	plot_wellclassified_images(Xvl, predictions, Ground_Truth, n=10)
+
+	save_predictions(predictions)
+
+	
 
