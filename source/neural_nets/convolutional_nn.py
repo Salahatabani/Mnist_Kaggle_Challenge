@@ -28,7 +28,7 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth, drop_pr, n_training):
 	y_ = tf.placeholder(tf.float32, shape=[None, 10]) #placeholder for labels
 	x_image = tf.reshape(x, [-1,28,28,1]) #transform image to 2D 28*28 pixels matrix
 	#Hidden Layer 1 : 
-	W_conv1 = weight_variable([5, 5, 1, 32]) #weights: 5*5 patch box and 32 features
+	W_conv1 = weight_variable([5, 5, 1, 32]) #weights: 5*5 filter and 32 features
 	b_conv1 = bias_variable([32]) #bais
 	h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) #convolution with relu transfer
 	h_pool1 = max_pool_2x2(h_conv1) #do pooling
@@ -86,6 +86,7 @@ if __name__ == '__main__':
 	dropout_probability = 0.5
 	Xtr, Ytr, Xte = load_data()
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
+	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
 	accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
 
 	print("test accuracy "+str(accuracy))
