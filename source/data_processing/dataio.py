@@ -96,7 +96,7 @@ def plot_images(X):
 		axarr.imshow(X[0, :].reshape(ydim, xdim), cmap=plt.cm.binary_r)
 	plt.show()
 
-def hallucinate_data(X, Y, factor=4): #will return a dataset = of size factor* numper of data points  
+def hallucinate_data(X, Y, factor=5): #will return a dataset = of size factor* numper of data points  
 	#rotate randomly every data point factor times
 	#X is a numpy matrix representing the data n*d
 	#Y is a numpy matrix representing the labels n*10

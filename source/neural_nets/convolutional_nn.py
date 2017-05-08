@@ -93,7 +93,7 @@ def predict_testlabels(Xtr, Ytr, Xte, train_iterations):
 
 def predict_onvalidation(Xtr, Ytr, train_iterations):
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
-	Xtr, Ytr = hallucinate_data(Xtr, Ytr, 5)
+	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
 	predictions, confidences, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
 	print("test accuracy "+str(accuracy))
