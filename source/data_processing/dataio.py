@@ -28,8 +28,15 @@ def load_data():
 def save_predictions(Yte):
 	#Ytr is a numpy matrix representing the test labels n*10 (a label is a vector of dimention 10 that contains 1 on the dimention that corresponds to the right digit)
 	data_dir=os.path.abspath("../../dataset/")
-	prediction_file= os.path.join(data_dir, 'prediction.mat')
-	io.savemat(prediction_file, {'y': prediction_file})
+	prediction_file= os.path.join(data_dir, 'prediction.csv')
+
+	#io.savemat(prediction_file, {'y': Yte})
+	Yte = devectorize_labels(Yte)
+	f = open(prediction_file, 'w')
+	f.write('id,digit\n')
+	for i in range(np.size(Yte)):
+		f.write(str(i)+","+str(Yte[i])+"\n")
+	f.close()
 
 
 
@@ -84,9 +91,9 @@ def plot_images(X):
 	
 	if n > 1:
 		for i in range(n):
-			axarr[i].imshow(X[i, :].reshape(ydim, xdim).T, cmap=plt.cm.binary_r)
+			axarr[i].imshow(X[i, :].reshape(ydim, xdim), cmap=plt.cm.binary_r)
 	else:
-		axarr.imshow(X[0, :].reshape(ydim, xdim).T, cmap=plt.cm.binary_r)
+		axarr.imshow(X[0, :].reshape(ydim, xdim), cmap=plt.cm.binary_r)
 	plt.show()
 
 def hallucinate_data(X, Y, factor=4): #will return a dataset = of size factor* numper of data points  
@@ -95,10 +102,10 @@ def hallucinate_data(X, Y, factor=4): #will return a dataset = of size factor* n
 	#Y is a numpy matrix representing the labels n*10
 	#return X and Y where dim X is n_new*10 and dim Y is n_new*10. n_new=n*factor
 	if factor > 1:
-		hallucinated_X = np.apply_along_axis(rotate_image, 1, X)
+		hallucinated_X = np.apply_along_axis(affine_transformation, 1, X)
 		hallucinated_Y = np.copy(Y)
 		for i in range(factor-2):
-			hallucinated_X = np.concatenate((hallucinated_X, np.apply_along_axis(rotate_image, 1, X)), 0)
+			hallucinated_X = np.concatenate((hallucinated_X, np.apply_along_axis(affine_transformation, 1, X)), 0)
 			hallucinated_Y = np.concatenate((hallucinated_Y, Y),0)
 		X=np.concatenate((X, hallucinated_X),0)
 		Y=np.concatenate((Y, hallucinated_Y), 0)
@@ -143,13 +150,20 @@ def plot_wellclassified_images(X, Y_pred, Y_labels, n=10):
 
 
 
-def rotate_image(vec):
-	angle_window = 40
+def affine_transformation(vec): #applay a rotation and a translation
+	angle_window = 45 #generate uniformly an angle between [-angle_window, angle_window] (in degrees)
+	trans_windon = 3  #generate uniformly a pixel translation [-trans_windon, trans_windon]
 	d = np.size(vec)
 	xdim=int(np.sqrt(d)); ydim=int(np.sqrt(d))
-	angle = int(np.random.rand()*360-(2*angle_window))+angle_window #sample uniformly an angle between angle_window and 360-angle_window
-	rot_im = scim.interpolation.rotate(vec.reshape(ydim, xdim).T, angle, reshape=False)
+	angle = int(np.random.rand()*(angle_window*2)+1)-angle_window #sample uniformly an angle 
+	translation = (int(np.random.rand()*((trans_windon*2)+1))-trans_windon, int(np.random.rand()*((trans_windon*2)+1))-trans_windon) #sample a translation for each dimension
+	im = vec.reshape(ydim, xdim)
+	trans_im = scim.interpolation.shift(im, translation)
+	rot_im = scim.interpolation.rotate(trans_im, angle, reshape=False)
+	#trans_vec = trans_im.reshape((xdim*ydim,))
+	
 	rot_vec = rot_im.reshape((xdim*ydim,))
+	
 	return rot_vec
 
 if __name__ == '__main__':

@@ -42,7 +42,6 @@ def predict(clf, X):
 	ones = np.ones(len(Yte_f))
 	matrix = scipy.sparse.csr_matrix((ones, Yte_f, indptr))
 	Yte = matrix.todense()
-	#pdb.set_trace()
 	return Yte
 
 

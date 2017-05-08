@@ -64,6 +64,7 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth=None, drop_pr=0.5, n_training=1000):
 	#train
 	for i in range(n_training):
 		X_batch, Y_batch = sample_seqential_batch(Xtr, Ytr, 100, i)
+		#X_batch, Y_batch = sample_random_batch(Xtr, Ytr, 100)
 
 		if i%100 == 0:
 			train_accuracy = accuracy.eval(feed_dict={
@@ -87,13 +88,11 @@ def predict_testlabels(Xtr, Ytr, Xte, train_iterations):
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
 	predictions, accuracy = apply_cnn(Xtr, Ytr, Xte, None, dropout_probability, train_iterations)
 	save_predictions(predictions)
-	#plot_missclassified_images(Xte, predictions, Ground_Truth, n=10)
-	#plot_wellclassified_images(Xte, predictions, Ground_Truth, n=10)
 	return predictions
 
 def predict_onvalidation(Xtr, Ytr, train_iterations):
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
-	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
+	Xtr, Ytr = hallucinate_data(Xtr, Ytr, 5)
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
 	predictions, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
 	print("test accuracy "+str(accuracy))
@@ -105,11 +104,14 @@ def predict_onvalidation(Xtr, Ytr, train_iterations):
 
 if __name__ == '__main__':
 	#load data
-	train_iterations = 30000
+	train_iterations = 40000
 	dropout_probability = 0.5
 	Xtr, Ytr, Xte = load_data()
 	#predict_testlabels(Xtr, Ytr, Xte, train_iterations)
+	#Xtr=normalize_and_center(Xtr)
 	predict_onvalidation(Xtr, Ytr, train_iterations)
+	pdb.set_trace()
+	print("done")
 	
 
 	
