@@ -135,10 +135,11 @@ def plot_missclassified_images(X, Y_pred, Y_labels, n=10):
 	iderr=np.where(predictions!=truth)[0]
 	Xerr, wrong_labels, correct_labels = X[iderr,:], predictions[iderr], truth[iderr]
 	n=min(n, np.shape(iderr)[0])
-	print("plotting missclassified images: ")
-	print("uncorrect labels : "+str(wrong_labels[:n]))
-	print("correct   labels : "+str(correct_labels[:n]))
-	plot_images(Xerr[:n,:])
+	if n>0:
+		print("plotting missclassified images: ")
+		print("uncorrect labels : "+str(wrong_labels[:n]))
+		print("correct   labels : "+str(correct_labels[:n]))
+		plot_images(Xerr[:n,:])
 
 def plot_wellclassified_images(X, Y_pred, Y_labels, n=10):
 	#n is the number of images to be displayed
