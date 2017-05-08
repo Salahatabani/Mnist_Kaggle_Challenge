@@ -110,7 +110,7 @@ if __name__ == '__main__':
 	#predict_testlabels(Xtr, Ytr, Xte, train_iterations)
 	#Xtr=normalize_and_center(Xtr)
 	predict_onvalidation(Xtr, Ytr, train_iterations)
-	pdb.set_trace()
+	#pdb.set_trace()
 	print("done")
 	
 
