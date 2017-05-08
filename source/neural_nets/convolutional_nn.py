@@ -112,7 +112,7 @@ if __name__ == '__main__':
 	#predictions, confidences, accuracy = predict_onvalidation(Xtr, Ytr, train_iterations)
 	log_likelihood = np.sum(np.log(confidences))/np.size(confidences)
 	#pdb.set_trace()
-	print("log likelihood prediction :"+str(log_likelihood))
+	print("log likelihood prediction (confidence of predictions):"+str(log_likelihood))
 	
 
 	
