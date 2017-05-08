@@ -89,6 +89,7 @@ def predict_testlabels(Xtr, Ytr, Xte, train_iterations):
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
 	predictions, confidences, accuracy = apply_cnn(Xtr, Ytr, Xte, None, dropout_probability, train_iterations)
 	save_predictions(predictions)
+	plot_lowestconfidence_images(Xte, predictions, confidences, n=10)
 	return predictions, confidences #predictions are the predicted labels, confidences are the probabilities of every predicted label
 
 def predict_onvalidation(Xtr, Ytr, train_iterations):
@@ -99,6 +100,7 @@ def predict_onvalidation(Xtr, Ytr, train_iterations):
 	print("test accuracy "+str(accuracy))
 	plot_missclassified_images(Xvl, predictions, Ground_Truth, n=10)
 	plot_wellclassified_images(Xvl, predictions, Ground_Truth, n=10)
+	plot_lowestconfidence_images(Xvl, predictions, confidences, n=10)
 	return predictions, confidences, accuracy #predictions are the predicted labels, confidences are the probabilities of every predicted label, accuracy is the accuracy of the validation set
 
 
@@ -111,7 +113,7 @@ if __name__ == '__main__':
 	predictions, confidences = predict_testlabels(Xtr, Ytr, Xte, train_iterations)
 	#predictions, confidences, accuracy = predict_onvalidation(Xtr, Ytr, train_iterations)
 	log_likelihood = np.sum(np.log(confidences))/np.size(confidences)
-	#pdb.set_trace()
+	#plot_images(X[diff,:])
 	print("log likelihood prediction (confidence of predictions):"+str(log_likelihood))
 	
 

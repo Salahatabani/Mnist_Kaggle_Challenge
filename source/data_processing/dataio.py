@@ -151,6 +151,15 @@ def plot_wellclassified_images(X, Y_pred, Y_labels, n=10):
 	print("plotting well classified images: ")
 	plot_images(Xerr[:n,:])
 
+def plot_lowestconfidence_images(X, Y_pred, Y_confidences, n=10):
+	predictions=devectorize_labels(Y_pred)
+	n=min(n, np.size(predictions))
+	lc_ids=Y_confidences.argsort()[:n]
+	print("plotting least confident images :")
+	print("predictions with the lowest confidence are : "+str(lc_ids))
+	print("their predicted labels are:                : "+str(predictions[lc_ids]))
+	print("their confidences (probabilities) are      : "+str(Y_confidences[lc_ids]))
+	plot_images(X[lc_ids,:])
 
 
 def affine_transformation(vec): #applay a rotation and a translation
