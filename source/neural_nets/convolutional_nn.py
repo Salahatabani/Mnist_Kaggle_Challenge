@@ -78,40 +78,41 @@ def apply_cnn(Xtr, Ytr, Xte, Ground_Truth=None, drop_pr=0.5, n_training=1000):
 
 	#return accuracy score on test set
 	predictions = vectorize_labels(sess.run(tf.argmax(y_conv,1), feed_dict={x: Xte, keep_prob: 1.0})) 
+	confidences = np.max(sess.run(tf.nn.softmax(y_conv), feed_dict={x: Xte, keep_prob: 1.0}),1) #compute the probability associated with each prediction
 	acc=None
 	if Ground_Truth !=None:
 		acc = accuracy.eval(feed_dict={x: Xte, y_: Ground_Truth, keep_prob: 1.0})
-	return predictions, acc
+	return predictions, confidences, acc
 
 def predict_testlabels(Xtr, Ytr, Xte, train_iterations):
 	Xtr, Ytr = hallucinate_data(Xtr, Ytr)
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
-	predictions, accuracy = apply_cnn(Xtr, Ytr, Xte, None, dropout_probability, train_iterations)
+	predictions, confidences, accuracy = apply_cnn(Xtr, Ytr, Xte, None, dropout_probability, train_iterations)
 	save_predictions(predictions)
-	return predictions
+	return predictions, confidences #predictions are the predicted labels, confidences are the probabilities of every predicted label
 
 def predict_onvalidation(Xtr, Ytr, train_iterations):
 	Xtr, Ytr, Xvl, Ground_Truth = split_rnd(Xtr, Ytr)
 	Xtr, Ytr = hallucinate_data(Xtr, Ytr, 5)
 	print("train size (n,d)=("+str(np.shape(Xtr))+")")
-	predictions, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
+	predictions, confidences, accuracy = apply_cnn(Xtr, Ytr, Xvl, Ground_Truth, dropout_probability, train_iterations)
 	print("test accuracy "+str(accuracy))
 	plot_missclassified_images(Xvl, predictions, Ground_Truth, n=10)
 	plot_wellclassified_images(Xvl, predictions, Ground_Truth, n=10)
-	return predictions, accuracy
+	return predictions, confidences, accuracy #predictions are the predicted labels, confidences are the probabilities of every predicted label, accuracy is the accuracy of the validation set
 
 
 
 if __name__ == '__main__':
 	#load data
-	train_iterations = 40000
+	train_iterations = 10000
 	dropout_probability = 0.5
 	Xtr, Ytr, Xte = load_data()
-	#predict_testlabels(Xtr, Ytr, Xte, train_iterations)
-	#Xtr=normalize_and_center(Xtr)
-	predict_onvalidation(Xtr, Ytr, train_iterations)
+	predictions, confidences = predict_testlabels(Xtr, Ytr, Xte, train_iterations)
+	#predictions, confidences, accuracy = predict_onvalidation(Xtr, Ytr, train_iterations)
+	log_likelihood = np.sum(np.log(confidences))/np.size(confidences)
 	#pdb.set_trace()
-	print("done")
+	print("log likelihood prediction :"+str(log_likelihood))
 	
 
 	

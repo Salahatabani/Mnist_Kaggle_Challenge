@@ -27,7 +27,7 @@ def load_data():
 
 def save_predictions(Yte):
 	#Ytr is a numpy matrix representing the test labels n*10 (a label is a vector of dimention 10 that contains 1 on the dimention that corresponds to the right digit)
-	data_dir=os.path.abspath("../../dataset/")
+	data_dir=os.path.abspath("../../output/")
 	prediction_file= os.path.join(data_dir, 'prediction.csv')
 
 	#io.savemat(prediction_file, {'y': Yte})
@@ -135,6 +135,7 @@ def plot_missclassified_images(X, Y_pred, Y_labels, n=10):
 	iderr=np.where(predictions!=truth)[0]
 	Xerr, wrong_labels, correct_labels = X[iderr,:], predictions[iderr], truth[iderr]
 	n=min(n, np.shape(iderr)[0])
+	print("plotting missclassified images: ")
 	print("uncorrect labels : "+str(wrong_labels[:n]))
 	print("correct   labels : "+str(correct_labels[:n]))
 	plot_images(Xerr[:n,:])
@@ -146,6 +147,7 @@ def plot_wellclassified_images(X, Y_pred, Y_labels, n=10):
 	iderr=np.where(predictions==truth)[0]
 	Xerr = X[iderr,:]
 	n=min(n, np.shape(iderr)[0])
+	print("plotting well classified images: ")
 	plot_images(Xerr[:n,:])
 
 
