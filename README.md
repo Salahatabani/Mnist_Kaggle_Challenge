@@ -31,6 +31,7 @@ Methodology
 
 Geometric transformation for the digits: we applied random rotations and translations. Five new images were generated from each image, so the new training set consisted of 24,000 images
 
+
 **Model:** 
 
 Convolutional Neural Network with :
