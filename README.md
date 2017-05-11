@@ -32,10 +32,10 @@ Geometric transformation for the digits: we applied random rotations and transla
 
 Model
 Convolutional Neural Network with :
+
 -Layer 1: 5*5 patch, 32 feature maps, Relu transfer function. Then pooling 2*2
 
 -Layer 2: 5*5 patch, 64 feature maps, Relu transfer function. Then pooling 2*2
 
 -Layer 3: fully connected layer with 1024 output (with 0.5 dropout probability)
-
 -Layer 4: Softmax
