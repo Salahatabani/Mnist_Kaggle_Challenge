@@ -27,12 +27,12 @@ Accuracy
 
 Methodology
 ---------
-Preprocessing: 
+*Preprocessing:* \n
 Geometric transformation for the digits: we applied random rotations and translations. Five new images were generated from each image, so the new training set consisted of 24,000 images
 
-Model
+*Model:* \n
 Convolutional Neural Network with :
-  -Layer 1: 5*5 patch, 32 feature maps, Relu transfer function. Then pooling 2*2
-  -Layer 2: 5*5 patch, 64 feature maps, Relu transfer function. Then pooling 2*2
-  -Layer 3: fully connected layer with 1024 output (with 0.5 dropout probability)
-  -Layer 4: Softmax
+*Layer 1: 5*5 patch, 32 feature maps, Relu transfer function. Then pooling 2*2
+*Layer 2: 5*5 patch, 64 feature maps, Relu transfer function. Then pooling 2*2
+*Layer 3: fully connected layer with 1024 output (with 0.5 dropout probability)
+*Layer 4: Softmax
